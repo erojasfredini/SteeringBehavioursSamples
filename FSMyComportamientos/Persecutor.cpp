@@ -6,7 +6,7 @@
 //-------------	Constructor/Destructor	-----------------------//
 //-------------------------------------------------------------//
 
-Persecutor::Persecutor(Vehiculo* pPresa, const b2BodyDef& CuerpoDef, const b2FixtureDef& AdornoDef, float escala, sf::Image* pTextura): 
+Persecutor::Persecutor(Vehiculo* pPresa, const b2BodyDef& CuerpoDef, const b2FixtureDef& AdornoDef, float escala, sf::Texture* pTextura):
 											Vehiculo(CuerpoDef, AdornoDef, escala, pTextura),
 											m_pPresa(pPresa)
 {

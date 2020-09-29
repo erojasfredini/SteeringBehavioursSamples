@@ -13,7 +13,7 @@ class Persecutor: public Vehiculo
 		friend class EstadoQuieto;
 		friend class EstadoAtacar;
 
-		Persecutor(Vehiculo* pPresa, const b2BodyDef& CuerpoDef, const b2FixtureDef& AdornoDef, float escala, sf::Image* pTextura);
+		Persecutor(Vehiculo* pPresa, const b2BodyDef& CuerpoDef, const b2FixtureDef& AdornoDef, float escala, sf::Texture* pTextura);
 
 		std::string GetNombreEstadoActual();
 };

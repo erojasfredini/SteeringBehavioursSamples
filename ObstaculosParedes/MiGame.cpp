@@ -6,7 +6,7 @@
 //-------------	Constructor/Destructor	-----------------------//
 //-------------------------------------------------------------//
 
-MiGame::MiGame(): Game(sf::VideoMode(800,600,32), "Ejemplo: Basico Comportamientos", sf::Style::Titlebar|sf::Style::Close, sf::WindowSettings(24, 8, 0), 60)
+MiGame::MiGame(): Game(sf::VideoMode(800,600,32), "Ejemplo: Basico Comportamientos", sf::Style::Titlebar|sf::Style::Close, sf::ContextSettings(), 60)
 {}
 
 MiGame::~MiGame()
@@ -24,18 +24,18 @@ MiGame* MiGame::Singleton()
 
 void MiGame::CrearEscena()
 {
-	sf::Image* img = &m_ManagerDeImagenes[IDImagen::VehiculoParticula];
+	sf::Texture* img = &m_ManagerDeImagenes[IDImagen::VehiculoParticula];
 	float escala = 0.2f;
 
 	b2BodyDef cuerpo;
 	cuerpo.type        = b2BodyType::b2_dynamicBody;
 	b2FixtureDef adorno;
-	adorno.restitution = 0.0;
+	adorno.restitution = 0.0f;
 	adorno.isSensor    = false;
 	adorno.friction    = 0.3f;
 	adorno.density     = 0.01f;//Masa de 26.214399
 	b2PolygonShape* pRectangulo = new b2PolygonShape();
-	pRectangulo->SetAsBox(img->GetWidth()/2*escala, img->GetHeight()/2*escala, b2Vec2(0,0), 0);
+	pRectangulo->SetAsBox(img->getSize().x/2*escala, img->getSize().y/2*escala, b2Vec2(0,0), 0);
 	adorno.shape       = pRectangulo;
 
 	cuerpo.position = b2Vec2(100, 100);
@@ -63,7 +63,7 @@ void MiGame::CrearEscena()
 
 		//Pared de arriba
 		cuerpo.type        = b2BodyType::b2_staticBody;
-		adorno.restitution = 0.2;
+		adorno.restitution = 0.2f;
 		adorno.isSensor    = false;
 		adorno.friction    = 0.3f;
 		adorno.density     = 0.01f;
@@ -72,32 +72,31 @@ void MiGame::CrearEscena()
 
 		cuerpo.position = b2Vec2(400, 0);
 		cuerpo.angle    = 0;
-		sf::Shape rectangulo = sf::Shape::Rectangle(sf::Vector2f(-400,  10.0f),
-													sf::Vector2f( 400, -10.0f),
-													sf::Color::Green);
+		sf::RectangleShape* rectangulo = new sf::RectangleShape(sf::Vector2f(800.0f,  20.0f));
+		rectangulo->setFillColor(sf::Color::Green);
 
 		Paredes.push_back( new SteeringBehaviors::Pared(sf::Vector2f(0.0f, 1.0f), sf::Vector2f(cuerpo.position.x, cuerpo.position.y)) );
-		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, &rectangulo) );
+		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, rectangulo) );
 
 		//Pared de abajo
 		cuerpo.position = b2Vec2(400, 600);
 
 		Paredes.push_back( new SteeringBehaviors::Pared(sf::Vector2f(0.0f, -1.0f), sf::Vector2f(cuerpo.position.x, cuerpo.position.y)) );
-		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, &rectangulo) );
+		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, new sf::RectangleShape(*rectangulo)) );
 
 		//Pared de izquierda
 		cuerpo.position = b2Vec2(0, 300);
 		cuerpo.angle = 3.1415f/2.0f;
 
 		Paredes.push_back( new SteeringBehaviors::Pared(sf::Vector2f(1.0f,0.0f), sf::Vector2f(cuerpo.position.x, cuerpo.position.y)) );
-		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, &rectangulo) );
+		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, new sf::RectangleShape(*rectangulo)) );
 
 		//Pared de derecha
 		cuerpo.position = b2Vec2(800, 300);
 		cuerpo.angle = 3.1415f/2.0f;
 
 		Paredes.push_back( new SteeringBehaviors::Pared(sf::Vector2f(-1.0f,0.0f), sf::Vector2f(cuerpo.position.x, cuerpo.position.y)) );
-		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, &rectangulo) );
+		ParedesEscena.push_back( new EntidadEscena(cuerpo, adorno, new sf::RectangleShape(*rectangulo)) );
 
 		m_pAutoFantastico->GetSteeringBehaviors().m_pParedes = &Paredes;
 
@@ -115,30 +114,26 @@ void MiGame::CrearEscena()
 
 			cuerpo.position = b2Vec2((rand()/(float)RAND_MAX)*400+200, (rand()/(float)RAND_MAX)*400+100);
 			cuerpo.angle    = 0;
-			sf::Shape circulo = sf::Shape::Circle(sf::Vector2f(0.0f, 0.0f),
-													pCirculo->m_radius, sf::Color::Green);
+			sf::Shape* circulo = new sf::CircleShape(pCirculo->m_radius);
+			circulo->setFillColor(sf::Color::Green);
 
-			Obstaculos.push_back( new EntidadEscena(cuerpo, adorno, &circulo) );
+			Obstaculos.push_back( new EntidadEscena(cuerpo, adorno, circulo) );
 		}
 		m_pAutoFantastico->GetSteeringBehaviors().m_pObstaculos = &Obstaculos;
 }
 
-void MiGame::Actualizar()
+void MiGame::Actualizar(const float dt)
 {
-	float dt = Game::m_Window.GetFrameTime();
-
-	const static sf::Input& input = m_Window.GetInput();
-
 	//////////////////////////////////////////////////
 	//////     ACTUALIZANDO EL VEHICULO     //////////
 	//////////////////////////////////////////////////
 
-		
+
 		m_pAutoFantastico->Actualizar(dt);
 
 		for(int i=0; i < Obstaculos.size() ; ++i)
 			Obstaculos[i]->Actualizar(dt);
-	
+
 		for(int i=0; i < ParedesEscena.size() ; ++i)
 			ParedesEscena[i]->Actualizar(dt);
 
@@ -147,11 +142,9 @@ void MiGame::Actualizar()
 	m_World.ClearForces();
 }
 
-void MiGame::Dibujar()
+void MiGame::Dibujar(const float dt)
 {
-	float dt = Game::m_Window.GetFrameTime();
-
-	m_Window.Clear();
+	m_Window.clear();
 
 	//////////////////////////////////////////////////
 	//////      DIBUJANDO EL VEHICULO       //////////
@@ -165,11 +158,11 @@ void MiGame::Dibujar()
 		for(int i=0; i < ParedesEscena.size() ; ++i)
 			ParedesEscena[i]->Dibujar(m_Window);
 
-	m_Window.Display();
+	m_Window.display();
 }
 
 void MiGame::LoadRecursos()
 {
-	if( !m_ManagerDeImagenes[IDImagen::VehiculoParticula].LoadFromFile("Recursos\\Vehiculo2.png") )
+	if( !m_ManagerDeImagenes[IDImagen::VehiculoParticula].loadFromFile("Recursos\\Vehiculo2.png") )
 			exit(0);
 }

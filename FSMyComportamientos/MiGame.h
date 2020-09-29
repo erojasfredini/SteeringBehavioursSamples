@@ -37,7 +37,7 @@ public:
 	/////////	Game Propiedades publicas	 /////////
 	//================================================
 
-	std::map<IDImagen,sf::Image> m_ManagerDeImagenes;
+	std::map<IDImagen,sf::Texture> m_ManagerDeImagenes;
 
 	//================================================
 	/////////////	 Game Metodos		 /////////////
@@ -47,10 +47,10 @@ public:
 	virtual void CrearEscena();
 
 	//Actualiza la escena
-	virtual void Actualizar();
+	virtual void Actualizar(const float dt);
 
 	//Dibuja la escena
-	virtual void Dibujar();
+	virtual void Dibujar(const float dt);
 
 	//Carga los recursos a usar
 	virtual void LoadRecursos();
