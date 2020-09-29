@@ -43,8 +43,8 @@ void MiGame::CrearEscena()
 
 	m_pAutoFantastico = new Vehiculo(cuerpo, adorno, escala, img);
 
-	m_pAutoFantastico->m_FuerzaSteeringMax = 600 * 10.0f;
-	m_pAutoFantastico->m_VelocidadMax = 40 * 10.0f;
+	m_pAutoFantastico->m_FuerzaSteeringMax = 600;
+	m_pAutoFantastico->m_VelocidadMax = 40;
 
 	//////////////////////////////////////////////////
 	////// ACTIVANDO LOS STEERING BEHAVIORS //////////
