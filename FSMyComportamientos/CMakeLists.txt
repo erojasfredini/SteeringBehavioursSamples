@@ -51,6 +51,7 @@ target_link_libraries(FSMyComportamientos PRIVATE box2d::box2d ${PROJECT_LINK_LI
 # Output folder
 set_target_properties(FSMyComportamientos PROPERTIES PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Bin/)
 set_target_properties(FSMyComportamientos PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Bin/)
+set_target_properties(FSMyComportamientos PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Bin/)# This is needed in VS so that the working directory isn't the project folder, but it is on the .exe bin path
 
 # Set compiler to C++17
 set_property(TARGET FSMyComportamientos PROPERTY CXX_STANDARD 17)
